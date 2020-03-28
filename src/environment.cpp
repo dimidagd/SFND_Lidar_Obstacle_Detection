@@ -41,7 +41,7 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
     pcl::PointCloud<pcl::PointXYZI>::Ptr filteredCloud = pointProcessorI->FilterCloud(inputCloud, 0.5, Eigen::Vector4f{-20,-5,-3,1},Eigen::Vector4f{20,5,5,1});
     //renderPointCloud(viewer,inputCloud,"inputCloud");
     //renderPointCloud(viewer,filteredCloud, "filteredCloud");
-    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->SegmentPlaneOwn(filteredCloud, 200, 0.2);
+    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->SegmentPlane(filteredCloud, 200, 0.2);
     renderPointCloud(viewer, segmentCloud.first,"obstaclesCloud",Color(1,0,0));
     renderPointCloud(viewer, segmentCloud.second, "extractedPlaneCloud", Color(0,1,0));
 
