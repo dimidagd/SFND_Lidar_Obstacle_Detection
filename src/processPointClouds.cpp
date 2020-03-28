@@ -371,12 +371,12 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ClusteringOwn(typename pcl::P
     
     
     KdTree* tree = new KdTree;
-    for (int i=0; i<points.size(); i++)
-		tree->insert(points[i],i); 
+    for (int i=0; i<cloud->points.size(); i++)
+		tree->insert(cloud->points[i],i); 
 
     //std::vector<pcl::PointIndices> cluster_indices;
 
-    std::vector<std::vector<int>> cluster_indices = euclideanCluster(points, tree, 0.5);
+    std::vector<std::vector<int>> cluster_indices = euclideanCluster(cloud->points, tree, 0.5);
 
     for(std::vector<int> getIndices : cluster_indices) // for loop on a vector
     {
