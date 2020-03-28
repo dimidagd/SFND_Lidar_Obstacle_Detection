@@ -1,7 +1,7 @@
 // PCL lib Functions for processing point clouds 
 
 #include "processPointClouds.h"
-#include "/home/workspace/SFND_Lidar_Obstacle_Detection/src/quiz/ransac/ransac2d.cpp"
+#include "quiz/ransac/ransac2d.cpp"
 
 //constructor:
 template<typename PointT>
@@ -250,12 +250,12 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 	// TODO: Change the max iteration and distance tolerance arguments for Ransac function
 	std::unordered_set<int> inliers = Ransac(cloud, numIters, distThreshold);
 
-	typename pcl::PointCloud<pcl::PointT>::Ptr  cloudInliers(new pcl::PointCloud<pcl::PointT>());
-	typename pcl::PointCloud<pcl::PointT>::Ptr cloudOutliers(new pcl::PointCloud<pcl::PointT>());
+	typename pcl::PointCloud<PointT>::Ptr  cloudInliers(new pcl::PointCloud<PointT>());
+	typename pcl::PointCloud<PointT>::Ptr cloudOutliers(new pcl::PointCloud<PointT>());
 
 	for(int index = 0; index < cloud->points.size(); index++)
 	{
-		pcl::PointXYZ point = cloud->points[index];
+		typename <PointT> point = cloud->points[index];
 		if(inliers.count(index))
 			cloudInliers->points.push_back(point);
 		else
