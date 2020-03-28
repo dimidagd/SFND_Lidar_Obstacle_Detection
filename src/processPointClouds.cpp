@@ -357,7 +357,9 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult(cloudOutliers, cloudInliers);
     return segResult;
 }
-template<typename PointT>
+
+
+/* template<typename PointT>
 std::vector<typename pcl::PointCloud<PointT>::Ptr> ClusteringOwn(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize)
 {
 
@@ -398,9 +400,9 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ClusteringOwn(typename pcl::P
 
 
     return clusters;
-}
+} */
 
-
+/* 
 std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol)
 {
 
@@ -442,4 +444,4 @@ void clusterHelper(int index, const std::vector<std::vector<float>> points, std:
 			clusterHelper(id, points, cluster, processed, tree, distanceTol);
 	}
 
-}
+} */
