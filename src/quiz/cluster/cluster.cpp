@@ -75,8 +75,21 @@ void render2DTree(Node* node, pcl::visualization::PCLVisualizer::Ptr& viewer, Bo
 	}
 
 }
-void clusterHelper(int index, const std::vector<std::vector<float>> points, std::vector<int> &cluster, std::vector<bool> &processed, KdTree* tree, float distanceTol);
-std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol)
+void clusterHelper(int index, const std::vector<std::vector<float>> points, std::vector<int> &cluster, std::vector<bool> &processed, KdTree* tree, float distanceTol)
+{
+	processed[index] = true;
+	cluster.push_back(index);
+	std::vector<int> nearest = tree->search(points[index], distanceTol);
+
+	for (int id : nearest)
+	{
+		if (!processed[id])
+			clusterHelper(id, points, cluster, processed, tree, distanceTol);
+	}
+
+}
+
+std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol, int minSize, int maxSize)
 {
 
 	// TODO: Fill out this function to return list of indices for each cluster
@@ -96,7 +109,8 @@ std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<flo
 
 		std::vector<int> cluster;
 		clusterHelper(i, points, cluster, processed, tree, distanceTol);
-		clusters.push_back(cluster);
+		if (cluster.size() > minSize && cluster.size() < maxSize))
+			clusters.push_back(cluster);
 		i++;
 	}
 	
@@ -105,19 +119,7 @@ std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<flo
 
 }
 
-void clusterHelper(int index, const std::vector<std::vector<float>> points, std::vector<int> &cluster, std::vector<bool> &processed, KdTree* tree, float distanceTol)
-{
-	processed[index] = true;
-	cluster.push_back(index);
-	std::vector<int> nearest = tree->search(points[index], distanceTol);
 
-	for (int id : nearest)
-	{
-		if (!processed[id])
-			clusterHelper(id, points, cluster, processed, tree, distanceTol);
-	}
-
-}
 std::vector<std::vector<float>> CreateRandomData(int n, int n_clusters, float sigma)
 {
 
@@ -184,7 +186,7 @@ int main ()
   	auto startTime = std::chrono::steady_clock::now();
   	//
   	//std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 3.0);
-	  std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 0.5);
+	  std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 0.5, 1, 1000);
   	//
   	auto endTime = std::chrono::steady_clock::now();
   	auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
