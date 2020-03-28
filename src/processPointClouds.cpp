@@ -2,8 +2,8 @@
 
 #include "processPointClouds.h"
 #include <unordered_set>
-
-std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int maxIterations, float distanceTol)
+template<typename PointT>
+std::unordered_set<int> Ransac(pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceTol)
 {
 
 	auto startTime = std::chrono::steady_clock::now();
