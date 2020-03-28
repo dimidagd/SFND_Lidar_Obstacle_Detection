@@ -1,7 +1,92 @@
 // PCL lib Functions for processing point clouds 
 
 #include "processPointClouds.h"
-#include "quiz/ransac/ransac2d.cpp"
+#include <unordered_set>
+
+std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int maxIterations, float distanceTol)
+{
+
+	auto startTime = std::chrono::steady_clock::now();
+
+	std::unordered_set<int> inliersResult;
+	srand(time(NULL));
+	
+	// TODO: Fill in this function
+
+	// For max iterations 
+
+	while (maxIterations--)
+	{
+		
+	
+	// Randomly sample subset and fit line
+	std::unordered_set<int> inliers;
+
+	while (inliers.size() < 3 )
+		inliers.insert(rand()%(cloud->points.size()));
+	
+	auto itr = inliers.begin();
+
+	float x1, y1, z1, x2, y2, z2, x3,y3,z3;
+	x1 = cloud->points[*itr].x;
+	y1 = cloud->points[*itr].y;
+	z1 = cloud->points[*itr].z;
+	itr++;
+	x2 = cloud->points[*itr].x;
+	y2 = cloud->points[*itr].y;
+	z2 = cloud->points[*itr].z;
+	itr++;
+	x3 = cloud->points[*itr].x;
+	y3 = cloud->points[*itr].y;
+	z3 = cloud->points[*itr].z;
+
+	
+	float cross_i = (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
+	float cross_j = (z2 - z1)*(x3 - x1) - (x2 -x1)*(z3- z1);
+	float cross_k = (x2 -x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
+
+
+	float A = cross_i;
+	float B = cross_j;
+	float C = cross_k;
+	float D = -(cross_i*x1 + cross_j*y1 + cross_k*z1);
+
+	for (int index = 0; index < cloud->points.size(); index++)
+	{
+
+		if (inliers.count(index)>0)
+			continue;
+
+		pcl::PointXYZ point = cloud->points[index];
+		float x4 = point.x;
+		float y4 = point.y;
+		float z4 = point.z;
+
+		
+		float d = abs(A*x4 + B*y4 + C*z4 + D)/sqrt(A*A + B*B +C*C);// Measure distance between every point and fitted line
+
+		if (d < distanceTol)// If distance is smaller than threshold count it as inlier
+			inliers.insert(index);
+	}
+
+	
+	
+	
+
+		if(inliers.size()>inliersResult.size())
+		{
+			//std::cout << "new found" << std::endl;
+			inliersResult = inliers;
+		}
+	}
+	// Return indicies of inliers from fitted line with most inliers
+	auto endTime = std::chrono::steady_clock::now();
+	auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+	std::cout << "Ransac duration " << elapsedTime.count() << " milliseconds"  << std::endl;
+	return inliersResult;
+
+}
+
 
 //constructor:
 template<typename PointT>
